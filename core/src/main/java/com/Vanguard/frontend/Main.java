@@ -12,19 +12,23 @@ public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private Player player;
     private List<Bullet> bullets;
+    private List<Special> specials;
 
     private Texture playerTexture;
     private Texture bulletTexture;
+    private Texture specialTexture;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         bullets = new ArrayList<>();
+        specials = new ArrayList<>();
 
         playerTexture = new Texture("player.png");
         bulletTexture = new Texture("bullet_spray.png");
+        specialTexture = new Texture("dih.png");
 
-        player = new Player(10, 100, 200f, batch, playerTexture, bulletTexture);
+        player = new Player(10, 100, 200f, batch, playerTexture, bulletTexture, specialTexture);
     }
 
     @Override
@@ -34,13 +38,22 @@ public class Main extends ApplicationAdapter {
         batch.begin();
         player.render();
 
-        Bullet newBullet = player.shoot();
+        Bullet newBullet = player.shootBullet();
         if (newBullet != null) {
             bullets.add(newBullet);
         }
 
+        Special newSpecial = player.shootSpecial();
+        if (newSpecial != null) {
+            specials.add(newSpecial);
+        }
+
         for (Bullet bullet : bullets) {
             bullet.render();
+        }
+
+        for (Special special : specials) {
+            special.render();
         }
         batch.end();
 

@@ -12,19 +12,22 @@ public class Player {
     private int score;
     private float x;
     private float y;
-    private float lastShoot;
+    private float lastBullet;
+    private float lastSpecial;
 
     private SpriteBatch batch;
     private Texture texture;
     private Texture bulletTexture;
+    private Texture specialTexture;
 
-    public Player(int hp, int power, float speed, SpriteBatch batch, Texture texture, Texture bulletTexture){
+    public Player(int hp, int power, float speed, SpriteBatch batch, Texture texture, Texture bulletTexture, Texture specialTexture){
         this.hp = hp;
         this.power = power;
         this.speed = speed;
         this.batch = batch;
         this.texture = texture;
         this.bulletTexture = bulletTexture;
+        this.specialTexture = specialTexture;
 
         this.x = Gdx.graphics.getWidth() / 2f;
         this.y = 50;
@@ -56,13 +59,25 @@ public class Player {
         this.y = Math.max(minY, Math.min(maxY, this.y));
     }
 
-    public Bullet shoot(){
-        lastShoot += Gdx.graphics.getDeltaTime();
+    public Bullet shootBullet(){
+        lastBullet += Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
-            if (lastShoot >= 0.3f) {
-                lastShoot = 0;
+            if (lastBullet >= 0.3f) {
+                lastBullet = 0;
                 return new Bullet(this.power, 600f, this.x + (texture.getWidth()/2f), this.y + texture.getHeight(), batch, bulletTexture);
+            }
+        }
+        return null;
+    }
+
+    public Special shootSpecial(){
+        lastSpecial += Gdx.graphics.getDeltaTime();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            if (lastSpecial >= 3f) {
+                lastSpecial = 0;
+                return new Special(this.power, 60f, this.x + (texture.getWidth()/2f), this.y + texture.getHeight(), batch, specialTexture);
             }
         }
         return null;
