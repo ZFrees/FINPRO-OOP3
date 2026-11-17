@@ -1,11 +1,15 @@
-package com.Vanguard.frontend;
+package com.Vanguard.frontend.objects;
 
+import com.Vanguard.frontend.Special;
+import com.Vanguard.frontend.objects.bullets.Bullet;
+import com.Vanguard.frontend.objects.bullets.BulletType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Player {
+public class Player extends GameObject{
     private int hp;
     private int power;
     private float speed;
@@ -14,13 +18,14 @@ public class Player {
     private float y;
     private float lastBullet;
     private float lastSpecial;
-
+    private int items;
     private SpriteBatch batch;
     private Texture texture;
     private Texture bulletTexture;
     private Texture specialTexture;
 
     public Player(int hp, int power, float speed, SpriteBatch batch, Texture texture, Texture bulletTexture, Texture specialTexture){
+        super(280, 50, 32, 32, speed, Color.RED);
         this.hp = hp;
         this.power = power;
         this.speed = speed;
@@ -28,10 +33,32 @@ public class Player {
         this.texture = texture;
         this.bulletTexture = bulletTexture;
         this.specialTexture = specialTexture;
-
-        this.x = Gdx.graphics.getWidth() / 2f;
-        this.y = 50;
     }
+
+    public Player(float x, float y, int hp, int power, int items, float speed, SpriteBatch batch){
+        super(x, y, 32, 32, speed, Color.RED);
+        this.hp = hp;
+        this.power = power;
+        this.items = items;
+        this.batch = batch;
+    }
+
+    /*INFO: Saran Bentuk HitBox
+    public Polygon getCoreHitBox() {
+        float width = texture.getWidth();
+        float height = texture.getHeight();
+        float centerX = this.x + w / 2f;
+        float centerY = this.y + h / 2f;
+
+        float[] vertices = {
+            centerX, centerY + h / 4,
+            centerX - w / 4, centerY - h / 4,
+            centerX + w / 4, centerY - h / 4
+        };
+
+        return new Polygon(vertices);
+    } (Bentuk Segitiga)
+    */
 
     public void input(){
         float delta = Gdx.graphics.getDeltaTime();
@@ -63,9 +90,9 @@ public class Player {
         lastBullet += Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
-            if (lastBullet >= 0.3f) {
+            if (lastBullet >= 0.075f) {
                 lastBullet = 0;
-                return new Bullet(this.power, 600f, this.x + (texture.getWidth()/2f), this.y + texture.getHeight(), batch, bulletTexture);
+                return new Bullet(this.x + (texture.getWidth()/2f), this.y + texture.getHeight(), this.power, 600f, batch, BulletType.VULCAN);
             }
         }
         return null;

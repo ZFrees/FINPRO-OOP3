@@ -1,5 +1,7 @@
 package com.Vanguard.frontend;
 
+import com.Vanguard.frontend.objects.Player;
+import com.Vanguard.frontend.objects.bullets.Bullet;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
