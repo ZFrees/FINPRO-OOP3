@@ -1,5 +1,5 @@
 
-package com.dayson.backend;
+package com.Vanguard.frontend.UI;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -168,16 +168,16 @@ public class Menu extends ScreenAdapter {
 
                 switch (i) {
                     case 0:
-                        Systems.out.println("NEW GAME");
+                        System.out.println("NEW GAME");
                         break;
                     case 1:
-                        Systems.out.println("RESUME");
+                        System.out.println("RESUME");
                         break;
                     case 2:
-                        Systems.out.println("LOAD GAME");
+                        System.out.println("LOAD GAME");
                         break;
                     case 3:
-                        Systems.out.println("SAVE GAME");
+                        System.out.println("SAVE GAME");
                         break;
                     case 4:
                         Gdx.app.exit();

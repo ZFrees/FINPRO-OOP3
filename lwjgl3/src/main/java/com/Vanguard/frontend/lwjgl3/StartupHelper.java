@@ -74,7 +74,7 @@ public class StartupHelper {
      *         in this one
      */
     public static boolean startNewJvmIfRequired(boolean redirectOutput) {
-        String osName = Systems.getProperty("os.name").toLowerCase();
+        String osName = System.getProperty("os.name").toLowerCase();
         if (!osName.contains("mac")) {
             if (osName.contains("windows")) {
 // Here, we are trying to work around an issue with how LWJGL3 loads its extracted .dll files.
@@ -83,21 +83,21 @@ public class StartupHelper {
 // By extracting to the relevant "ProgramData" folder, which is usually "C:\ProgramData", we avoid this.
 // We also temporarily change the "user.name" property to one without any chars that would be invalid.
 // We revert our changes immediately after loading LWJGL3 natives.
-                String programData = Systems.getenv("ProgramData");
+                String programData = System.getenv("ProgramData");
                 if(programData == null) programData = "C:\\Temp\\"; // if ProgramData isn't set, try some fallback.
-                String prevTmpDir = Systems.getProperty("java.io.tmpdir", programData);
-                String prevUser = Systems.getProperty("user.name", "libGDX_User");
-                Systems.setProperty("java.io.tmpdir", programData + "/libGDX-temp");
-                Systems.setProperty("user.name", ("User_" + prevUser.hashCode() + "_GDX" + Version.VERSION).replace('.', '_'));
+                String prevTmpDir = System.getProperty("java.io.tmpdir", programData);
+                String prevUser = System.getProperty("user.name", "libGDX_User");
+                System.setProperty("java.io.tmpdir", programData + "/libGDX-temp");
+                System.setProperty("user.name", ("User_" + prevUser.hashCode() + "_GDX" + Version.VERSION).replace('.', '_'));
                 Lwjgl3NativesLoader.load();
-                Systems.setProperty("java.io.tmpdir", prevTmpDir);
-                Systems.setProperty("user.name", prevUser);
+                System.setProperty("java.io.tmpdir", prevTmpDir);
+                System.setProperty("user.name", prevUser);
             }
             return false;
         }
 
         // There is no need for -XstartOnFirstThread on Graal native image
-        if (!Systems.getProperty("org.graalvm.nativeimage.imagecode", "").isEmpty()) {
+        if (!System.getProperty("org.graalvm.nativeimage.imagecode", "").isEmpty()) {
             return false;
         }
 
@@ -111,28 +111,28 @@ public class StartupHelper {
         long pid = LibC.getpid();
 
         // check whether -XstartOnFirstThread is enabled
-        if ("1".equals(Systems.getenv("JAVA_STARTED_ON_FIRST_THREAD_" + pid))) {
+        if ("1".equals(System.getenv("JAVA_STARTED_ON_FIRST_THREAD_" + pid))) {
             return false;
         }
 
         // check whether the JVM was previously restarted
         // avoids looping, but most certainly leads to a crash
-        if ("true".equals(Systems.getProperty(JVM_RESTARTED_ARG))) {
-            Systems.err.println(
+        if ("true".equals(System.getProperty(JVM_RESTARTED_ARG))) {
+            System.err.println(
                     "There was a problem evaluating whether the JVM was started with the -XstartOnFirstThread argument.");
             return false;
         }
 
         // Restart the JVM with -XstartOnFirstThread
         ArrayList<String> jvmArgs = new ArrayList<>();
-        String separator = Systems.getProperty("file.separator", "/");
+        String separator = System.getProperty("file.separator", "/");
         // The following line is used assuming you target Java 8, the minimum for LWJGL3.
-        String javaExecPath = Systems.getProperty("java.home") + separator + "bin" + separator + "java";
+        String javaExecPath = System.getProperty("java.home") + separator + "bin" + separator + "java";
         // If targeting Java 9 or higher, you could use the following instead of the above line:
         //String javaExecPath = ProcessHandle.current().info().command().orElseThrow();
 
         if (!(new File(javaExecPath)).exists()) {
-            Systems.err.println(
+            System.err.println(
                     "A Java installation could not be found. If you are distributing this app with a bundled JRE, be sure to set the -XstartOnFirstThread argument manually!");
             return false;
         }
@@ -142,14 +142,14 @@ public class StartupHelper {
         jvmArgs.add("-D" + JVM_RESTARTED_ARG + "=true");
         jvmArgs.addAll(ManagementFactory.getRuntimeMXBean().getInputArguments());
         jvmArgs.add("-cp");
-        jvmArgs.add(Systems.getProperty("java.class.path"));
-        String mainClass = Systems.getenv("JAVA_MAIN_CLASS_" + pid);
+        jvmArgs.add(System.getProperty("java.class.path"));
+        String mainClass = System.getenv("JAVA_MAIN_CLASS_" + pid);
         if (mainClass == null) {
             StackTraceElement[] trace = Thread.currentThread().getStackTrace();
             if (trace.length > 0) {
                 mainClass = trace[trace.length - 1].getClassName();
             } else {
-                Systems.err.println("The main class could not be determined.");
+                System.err.println("The main class could not be determined.");
                 return false;
             }
         }
@@ -167,13 +167,13 @@ public class StartupHelper {
                 String line;
 
                 while ((line = processOutput.readLine()) != null) {
-                    Systems.out.println(line);
+                    System.out.println(line);
                 }
 
                 process.waitFor();
             }
         } catch (Exception e) {
-            Systems.err.println("There was a problem restarting the JVM");
+            System.err.println("There was a problem restarting the JVM");
             e.printStackTrace();
         }
 
