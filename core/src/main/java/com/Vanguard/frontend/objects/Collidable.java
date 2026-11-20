@@ -1,4 +1,4 @@
-package com.Vanguard.frontend.objects.pattern;
+package com.Vanguard.frontend.objects;
 
 import com.badlogic.gdx.math.Polygon;
 

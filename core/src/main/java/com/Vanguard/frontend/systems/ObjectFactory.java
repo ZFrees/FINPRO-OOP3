@@ -6,7 +6,7 @@ import com.Vanguard.frontend.objects.bullets.Bullet;
 import com.Vanguard.frontend.objects.bullets.BulletType;
 import com.Vanguard.frontend.objects.items.Item;
 import com.Vanguard.frontend.objects.items.ItemType;
-import com.Vanguard.frontend.objects.pattern.Collidable;
+import com.Vanguard.frontend.objects.Collidable;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

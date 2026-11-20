@@ -1,4 +1,4 @@
-/* package com.Vanguard.frontend.systems;
+package com.Vanguard.frontend.systems;
 
 import com.Vanguard.frontend.objects.GameObject;
 import com.Vanguard.frontend.objects.bullets.Bullet;
@@ -77,4 +77,4 @@ public class BulletManager {
     public int EnemyPoolSize() {
         return enemyBullet.size();
     }
-} */
+}
