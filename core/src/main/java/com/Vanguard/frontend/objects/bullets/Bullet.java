@@ -1,6 +1,7 @@
 package com.Vanguard.frontend.objects.bullets;
 
 import com.Vanguard.frontend.objects.GameObject;
+import com.Vanguard.frontend.objects.patterns.bulletStrategy.BulletMovementPattern;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,6 +16,7 @@ public class Bullet extends GameObject {
     float vx, vy;
     float angle = 90f;
     boolean isPlayerBullet;
+    private BulletMovementPattern movementPattern;
 
     public Bullet(float x, float y, int power, float speed, SpriteBatch batch, BulletType bulletType){
         super(x, y, 8, 8, speed, Color.WHITE);
@@ -23,7 +25,17 @@ public class Bullet extends GameObject {
         this.power = power;
         this.speed = speed;
         this.batch = batch;
-        this.texture = texture;
+        this.bulletType = bulletType;
+    }
+
+    //no batch, experimenting
+    public Bullet(float x, float y, int power, float speed, BulletType bulletType){
+        super(x, y, 8, 8, speed, Color.WHITE);
+        this.vx = 0;
+        this.vy = speed;
+        this.power = power;
+        this.speed = speed;
+        this.batch = new SpriteBatch();
         this.bulletType = bulletType;
     }
 
@@ -45,10 +57,18 @@ public class Bullet extends GameObject {
 
     @Override
     public void update(float delta){
-        this.x += vx * delta;
-        this.y += vy * delta;
         this.stateTime += delta;
+        if (movementPattern != null) {
+            movementPattern.move(this, delta);
+        } else {
+            this.x += vx * delta;
+            this.y += vy * delta;
+        }
     }
+
+    //getters
+    public float getVx() { return vx; }
+    public float getVy() { return vy; }
 
     public void render(){
         batch.draw(texture, this.x, this.y, this.width, this.height);

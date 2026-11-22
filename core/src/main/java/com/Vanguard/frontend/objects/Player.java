@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Player extends GameObject{
+public class Player extends EntityShooter{
     private int hp;
     private int power;
     private float speed;

@@ -1,11 +1,14 @@
 package com.Vanguard.frontend.objects;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 
-public class GameObject {
+public class GameObject implements Collidable{
     protected float x;
     protected float y;
     protected float width;
@@ -16,6 +19,9 @@ public class GameObject {
     protected float stateTime = 0f;
     protected boolean active = true;
 
+    protected Polygon hitbox;
+    private Texture sprite;
+
     public GameObject(float x, float y, float width, float height, float speed, Color color){
         this.x = x;
         this.y = y;
@@ -23,6 +29,16 @@ public class GameObject {
         this.height = height;
         this.speed = speed;
         this.color = color;
+
+        //default hitbox in the form of polygon
+        this.hitbox = new Polygon(new float[]{
+            0, 0,
+            width, 0,
+            width, height,
+            0, height
+        });
+        this.hitbox.setOrigin(width / 2f, height / 2f);
+        this.hitbox.setPosition(x, y);
     }
 
     public void update(float delta){
@@ -45,6 +61,17 @@ public class GameObject {
             return true;
         }
         return false;
+    }
+
+    //overrides
+    @Override
+    public Polygon getCoreHitbox() {
+        return this.hitbox;
+    }
+
+    @Override
+    public void onCollision(Collidable other) {
+        //to be overridden
     }
 
     public void destroy() {
@@ -104,6 +131,8 @@ public class GameObject {
     }
 
     public void setY(float y){ this.y = y; }
+
+    public void setSprite(Texture sprite) {this.sprite = sprite;}
 
     public void setColor(Color color){
         this.color = color;

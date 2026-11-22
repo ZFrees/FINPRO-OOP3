@@ -8,6 +8,7 @@ import com.Vanguard.frontend.objects.items.Item;
 import com.Vanguard.frontend.objects.items.ItemType;
 import com.Vanguard.frontend.objects.Collidable;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -19,13 +20,27 @@ public class ObjectFactory {
 
     }
 
-    public static Bullet spawnEnemyBullet(float x, float y, int power, float speed, SpriteBatch batch, BulletType bulletType){
-        Bullet bullet = new Bullet(x, y, power, speed, batch, bulletType.BRATHA);
+    //Speed only
+    public static Bullet spawnEnemyBullet(float x, float y, int power, float speed, BulletType bulletType){
+        String key = switch (bulletType) {
+            case VULCAN -> "bullet_spray.png";
+
+            //TBA (To be added)
+            case LASER -> null;
+            case PLASMA -> null;
+            case MISSILES -> null;
+            case BOMBS -> null;
+            case BRATHA -> null;
+            case TOPHER -> null;
+        };
+        Texture sprite = AssetManager.getInstance().loadTexture(key);
+        Bullet bullet = new Bullet(x, y, power, speed, bulletType.BRATHA);
+        bullet.setSprite(sprite);
         return bullet;
     }
 
-    public static Bullet spawnPlayerBullet(float x, float y, int power, float speed, SpriteBatch batch, BulletType bulletType){
-        Bullet bullet = new Bullet(x, y, power, speed, batch, bulletType.VULCAN);
+    public static Bullet spawnPlayerBullet(float x, float y, int power, float speed, BulletType bulletType){
+        Bullet bullet = new Bullet(x, y, power, speed, bulletType.VULCAN);
         return bullet;
     }
 

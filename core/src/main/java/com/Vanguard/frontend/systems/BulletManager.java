@@ -22,27 +22,27 @@ public class BulletManager {
         enemyaActive = new ArrayList<>();
     }
 
-    public Bullet spawnPlayerBullet(float x, float y, float vx, float vy, BulletType bulletType, int power, boolean isPlayerBullet){
+    public Bullet spawnPlayerBullet(float x, float y , float speed, float vx, float vy, BulletType bulletType, int power, boolean isPlayerBullet){
         Bullet bullet;
         if (!playerBullet.isEmpty()) {
             bullet = playerBullet.poll();
             bullet.init(x, y, vx, vy, bulletType.VULCAN, power, true);
         } else {
-            bullet = ObjectFactory.spawnPlayerBullet(x, y, power, speeds(vx, vy), batch, bulletType);
+            bullet = ObjectFactory.spawnPlayerBullet(x, y, power, speed, bulletType);
             bullet.init(x, y, vx, vy, BulletType.VULCAN, power, true);
         }
         playerActive.add(bullet);
         return bullet;
     }
 
-    public Bullet spawnEnemyBullet(float x, float y, float vx, float vy, BulletType bulletType, int power, boolean isPlayerBullet){
+    public Bullet spawnEnemyBullet(float x, float y, float speed, float vx, float vy, BulletType bulletType, int power, boolean isPlayerBullet){
         Bullet bullet;
         if (!enemyBullet.isEmpty()) {
             bullet = enemyBullet.poll();
-            bullet.init(x, y, vx, vy, BulletType.VULCAN, power, true);
+            bullet.init(x, y, vx, vy, BulletType.VULCAN, power, false);
         } else {
-            bullet = ObjectFactory.spawnPlayerBullet(x, y, power, s);
-            bullet.init(x, y, vx, vy, BulletType.BRATHA, power, true);
+            bullet = ObjectFactory.spawnPlayerBullet(x, y, power, speed, bulletType);
+            bullet.init(x, y, vx, vy, BulletType.BRATHA, power, false);
         }
         enemyaActive.add(bullet);
         return bullet;
