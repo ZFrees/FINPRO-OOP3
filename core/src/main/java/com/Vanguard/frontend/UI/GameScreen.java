@@ -1,5 +1,6 @@
-package com.Vanguard.frontend;
+/* package com.Vanguard.frontend;
 
+import com.Vanguard.frontend.UI.PauseMenu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -69,4 +70,4 @@ public class GameScreen extends ScreenAdapter {
     public void dispose() {
         pauseMenu.dispose();
     }
-}
+} */
