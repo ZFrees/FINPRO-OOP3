@@ -1,7 +1,5 @@
 package com.Vanguard.frontend;
 
-import com.Vanguard.frontend.UI.Menu;
-import com.Vanguard.frontend.UI.PauseMenu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -32,7 +30,7 @@ public class GameScreen extends ScreenAdapter {
 
                 @Override
                 public void mainMenu() {
-                    game.setScreen(new Menu(game));
+                    game.setScreen(new com.Vanguard.frontend.UI.GameScreen(game));
                     dispose();
                 }
 

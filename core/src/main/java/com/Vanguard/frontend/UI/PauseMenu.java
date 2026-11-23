@@ -1,4 +1,3 @@
-
 package com.Vanguard.frontend.UI;
 
 import com.badlogic.gdx.Gdx;
@@ -14,7 +13,7 @@ public class PauseMenu {
     private ShapeRenderer shape;
     private BitmapFont font;
 
-    private String[] buttons = {
+    private final String[] buttons = {
         "RESUME",
         "SAVE GAME",
         "MAIN MENU",
@@ -61,43 +60,48 @@ public class PauseMenu {
 
         shape.begin(ShapeRenderer.ShapeType.Filled);
 
+        // Background overlay
         shape.setColor(0, 0, 0, 0.75f);
         shape.rect(0, 0, width, height);
 
-        shape.setColor(0.03f, 0.12f, 0.25f, 1);
-        shape.rect(centerX - 190, centerY - 180, 380, 360);
+        // Pause panel
+        shape.setColor(0.02f, 0.06f, 0.15f, 1);
+        shape.rect(
+            centerX - 190,
+            centerY - 180,
+            380,
+            360
+        );
 
+        // Buttons
         for (int i = 0; i < buttons.length; i++) {
 
+            float x = centerX - buttonWidth / 2;
             float y = centerY + 70 - i * (buttonHeight + gap);
 
             float mouseX = Gdx.input.getX();
             float mouseY = height - Gdx.input.getY();
 
             boolean hover =
-                mouseX >= centerX - buttonWidth / 2 &&
-                    mouseX <= centerX + buttonWidth / 2 &&
+                mouseX >= x &&
+                    mouseX <= x + buttonWidth &&
                     mouseY >= y &&
                     mouseY <= y + buttonHeight;
 
             if (hover) {
                 shape.setColor(0.05f, 0.4f, 0.8f, 1);
             } else {
-                shape.setColor(0.04f, 0.2f, 0.35f, 1);
+                shape.setColor(0.04f, 0.15f, 0.3f, 1);
             }
 
-            shape.rect(
-                centerX - buttonWidth / 2,
-                y,
-                buttonWidth,
-                buttonHeight
-            );
+            shape.rect(x, y, buttonWidth, buttonHeight);
         }
 
         shape.end();
 
         batch.begin();
 
+        // Title
         font.setColor(Color.CYAN);
         font.getData().setScale(3);
 
@@ -108,6 +112,7 @@ public class PauseMenu {
             centerY + 160
         );
 
+        // Button text
         font.setColor(Color.WHITE);
         font.getData().setScale(1.7f);
 
@@ -139,23 +144,28 @@ public class PauseMenu {
 
         for (int i = 0; i < buttons.length; i++) {
 
+            float x = centerX - buttonWidth / 2;
             float y = centerY + 70 - i * (buttonHeight + gap);
 
-            if (mouseX >= centerX - buttonWidth / 2 &&
-                mouseX <= centerX + buttonWidth / 2 &&
+            if (mouseX >= x &&
+                mouseX <= x + buttonWidth &&
                 mouseY >= y &&
                 mouseY <= y + buttonHeight) {
 
                 switch (i) {
+
                     case 0:
                         actions.resume();
                         break;
+
                     case 1:
                         actions.save();
                         break;
+
                     case 2:
                         actions.mainMenu();
                         break;
+
                     case 3:
                         actions.exit();
                         break;
