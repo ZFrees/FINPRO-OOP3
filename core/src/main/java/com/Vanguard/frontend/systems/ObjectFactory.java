@@ -1,6 +1,5 @@
 package com.Vanguard.frontend.systems;
 
-import com.Vanguard.frontend.objects.GameObject;
 import com.Vanguard.frontend.objects.Player;
 import com.Vanguard.frontend.objects.bullets.Bullet;
 import com.Vanguard.frontend.objects.bullets.BulletType;
@@ -11,7 +10,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class ObjectFactory {
     public static Player spawnPlayer(float x, float y, int hp, int power, int items, float speed, SpriteBatch batch){

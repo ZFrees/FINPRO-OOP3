@@ -1,21 +1,21 @@
 package com.Vanguard.frontend.objects;
 
 import com.Vanguard.frontend.Special;
-import com.Vanguard.frontend.objects.bullets.Bullet;
-import com.Vanguard.frontend.objects.bullets.BulletType;
+import com.Vanguard.frontend.objects.patterns.ShootingPattern;
+import com.Vanguard.frontend.objects.patterns.shootingStrategy.SpreadShot;
+import com.Vanguard.frontend.systems.BulletManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Polygon;
 
 public class Player extends EntityShooter{
     private int hp;
     private int power;
     private float speed;
     private int score;
-    private float x;
-    private float y;
     private float lastBullet;
     private float lastSpecial;
     private int items;
@@ -23,28 +23,64 @@ public class Player extends EntityShooter{
     private Texture texture;
     private Texture bulletTexture;
     private Texture specialTexture;
+    private Texture specialExplosionTexture;
 
-    public Player(int hp, int power, float speed, SpriteBatch batch, Texture texture, Texture bulletTexture, Texture specialTexture){
+    public static final int MAX_LEVEL = 10;
+    private static final float MAX_SPREAD_DEG = 120f;
+    private static final float BULLET_SPEED = 800f;
+    private static final int BULLET_DAMAGE = 1;
+    private static final float FIRE_INTERVAL = 0.15f;
+
+    private static final float STRAIGHT_SPEED = 800f;
+    private static final float STRAIGHT_SPACING = 3f;
+    private static final String STRAIGHT_SPRITE = "straight";
+
+    public static final int WEAPON_SPRAY = 0;
+    public static final int WEAPON_STRAIGHT = 1;
+    private int weapon = WEAPON_SPRAY;
+
+    private final ShootingPattern[][] patterns = buildPatterns();
+
+    private static ShootingPattern[][] buildPatterns() {
+        ShootingPattern[][] result = new ShootingPattern[2][MAX_LEVEL];
+        for (int level = 1; level <= MAX_LEVEL; level++) {
+            // Spray: 1, 3, 5 ... 19 bullets fanned up to 120 degrees
+            float spread = MAX_SPREAD_DEG * (level - 1) / (MAX_LEVEL - 1);
+            result[WEAPON_SPRAY][level - 1] =
+                new SpreadShot(BULLET_SPEED, 2 * level - 1, spread, BULLET_DAMAGE);
+
+            // Straight: 1 ... 10 parallel bullets, all going up, using bullet_straight.png
+            result[WEAPON_STRAIGHT][level - 1] =
+                new SpreadShot(STRAIGHT_SPEED, level, 0f, BULLET_DAMAGE,
+                    STRAIGHT_SPACING, null, null, STRAIGHT_SPRITE);
+        }
+        return result;
+    }
+
+    public Player(int hp, int power, float speed, SpriteBatch batch, Texture texture,
+                  Texture bulletTexture, Texture specialTexture, Texture specialExplosionTexture){
         super(280, 50, 32, 32, speed, Color.RED);
         this.hp = hp;
-        this.power = power;
+        this.power = clampLevel(power);
         this.speed = speed;
         this.batch = batch;
         this.texture = texture;
         this.bulletTexture = bulletTexture;
         this.specialTexture = specialTexture;
+        this.specialExplosionTexture = specialExplosionTexture;
     }
 
     public Player(float x, float y, int hp, int power, int items, float speed, SpriteBatch batch){
         super(x, y, 32, 32, speed, Color.RED);
         this.hp = hp;
-        this.power = power;
+        this.power = clampLevel(power);
         this.items = items;
         this.batch = batch;
     }
 
-    /*INFO: Saran Bentuk HitBox
     public Polygon getCoreHitBox() {
+        float w = texture.getWidth();
+        float h = texture.getHeight();
         float width = texture.getWidth();
         float height = texture.getHeight();
         float centerX = this.x + w / 2f;
@@ -57,8 +93,7 @@ public class Player extends EntityShooter{
         };
 
         return new Polygon(vertices);
-    } (Bentuk Segitiga)
-    */
+    }
 
     public void input(){
         float delta = Gdx.graphics.getDeltaTime();
@@ -86,16 +121,15 @@ public class Player extends EntityShooter{
         this.y = Math.max(minY, Math.min(maxY, this.y));
     }
 
-    public Bullet shootBullet(){
+    public void shootBullet(BulletManager bulletManager){
         lastBullet += Gdx.graphics.getDeltaTime();
 
-        if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
-            if (lastBullet >= 0.075f) {
-                lastBullet = 0;
-                return new Bullet(this.x + (texture.getWidth()/2f), this.y + texture.getHeight(), this.power, 600f, batch, BulletType.VULCAN);
-            }
+        if (Gdx.input.isKeyPressed(Input.Keys.Z) && lastBullet >= FIRE_INTERVAL) {
+            lastBullet = 0;
+            float originX = this.x + texture.getWidth() / 2f;
+            float originY = this.y + texture.getHeight();
+            patterns[weapon][power - 1].execute(originX, originY, bulletManager, true);
         }
-        return null;
     }
 
     public Special shootSpecial(){
@@ -104,7 +138,7 @@ public class Player extends EntityShooter{
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
             if (lastSpecial >= 3f) {
                 lastSpecial = 0;
-                return new Special(this.power, 60f, this.x + (texture.getWidth()/2f), this.y + texture.getHeight(), batch, specialTexture);
+                return new Special(this.power, 60f, this.x + (texture.getWidth()/2f), this.y + texture.getHeight(), batch, specialTexture, specialExplosionTexture);
             }
         }
         return null;
@@ -115,8 +149,16 @@ public class Player extends EntityShooter{
         batch.draw(texture, this.x, this.y);
     }
 
+    public void switchWeapon() {
+        weapon = (weapon == WEAPON_SPRAY) ? WEAPON_STRAIGHT : WEAPON_SPRAY; }
+    public int getWeapon() {
+        return weapon;
+    }
+
     public int getHp() { return hp; }
     public int getPower() { return power; }
+    public void setPower(int power) { this.power = clampLevel(power); }
+    private static int clampLevel(int p) { return Math.max(1, Math.min(MAX_LEVEL, p)); }
     public float getSpeed() { return speed; }
     public int getScore() { return score; }
     public void addHp(int hp){ this.hp += hp; }
