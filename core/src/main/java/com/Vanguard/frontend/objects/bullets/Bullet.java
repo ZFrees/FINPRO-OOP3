@@ -69,6 +69,10 @@ public class Bullet extends GameObject {
     //getters
     public float getVx() { return vx; }
     public float getVy() { return vy; }
+    public float getAngle() { return angle; }
+
+    //setters
+    public void setAngle(float angle1) { angle = angle1; }
 
     public void render(){
         batch.draw(texture, this.x, this.y, this.width, this.height);

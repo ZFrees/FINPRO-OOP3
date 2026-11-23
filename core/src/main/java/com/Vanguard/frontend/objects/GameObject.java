@@ -19,7 +19,7 @@ public class GameObject implements Collidable{
     protected float stateTime = 0f;
     protected boolean active = true;
 
-    protected Polygon hitbox;
+    protected Polygon shotHitbox;
     private Texture sprite;
 
     public GameObject(float x, float y, float width, float height, float speed, Color color){
@@ -30,15 +30,19 @@ public class GameObject implements Collidable{
         this.speed = speed;
         this.color = color;
 
-        //default hitbox in the form of polygon
-        this.hitbox = new Polygon(new float[]{
-            0, 0,
-            width, 0,
-            width, height,
-            0, height
-        });
-        this.hitbox.setOrigin(width / 2f, height / 2f);
-        this.hitbox.setPosition(x, y);
+        //default shot hitbox in the form of triangle, following width nheight
+        float centerX = this.x + width / 2f;
+        float centerY = this.y + height / 2f;
+
+        float[] vertices = {
+            centerX, centerY + height / 4,
+            centerX - width / 4, centerY - height / 4,
+            centerX + width / 4, centerY - height / 4
+        };
+
+        this.shotHitbox = new Polygon(vertices);
+        this.shotHitbox.setOrigin(width / 2f, height / 2f);
+        this.shotHitbox.setPosition(x, y);
     }
 
     public void update(float delta){
@@ -66,7 +70,7 @@ public class GameObject implements Collidable{
     //overrides
     @Override
     public Polygon getCoreHitbox() {
-        return this.hitbox;
+        return this.shotHitbox;
     }
 
     @Override

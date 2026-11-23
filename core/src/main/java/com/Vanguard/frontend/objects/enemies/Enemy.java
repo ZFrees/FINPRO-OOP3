@@ -23,6 +23,7 @@ public class Enemy extends EntityShooter {
     protected float shotHitboxWidth = 0f;
     protected float shotHitboxHeight = 0f;
 
+
     public Enemy(String name, int maxHp) {
         super(200, 380, 24, 24, 0, Color.PINK);
         this.name = name;
@@ -125,10 +126,25 @@ public class Enemy extends EntityShooter {
     public void setCollidable(boolean collidable) { this.collidable = collidable; }
 
     public Polygon getShotHitbox() {
-        if (this.shotHitbox == null) {
-            return getCoreHitbox();
+//        if (shotHitboxWidth <= 0f || shotHitboxHeight <= 0f || shotHitbox == null) {
+//            return getCoreHitbox();
+//        }
+        if (this.shotHitbox != null || shotHitboxWidth > 0f || shotHitboxHeight > 0f) {
+            return this.shotHitbox;
+        } else { //defaults to rectangle
+            float halfW = width / 2f;
+            float halfH = height / 2f;
+
+            float[] vertices = new float[] {
+                -halfW, -halfH,   // Bottom-left
+                halfW, -halfH,   // Bottom-right
+                halfW,  halfH,   // Top-right
+                -halfW,  halfH    // Top-left
+            };
+
+            Polygon hitbox = new Polygon(vertices);
+            return hitbox;
         }
-        return this.shotHitbox;
     }
 
     public void setShotHitboxSize(float width, float height) {

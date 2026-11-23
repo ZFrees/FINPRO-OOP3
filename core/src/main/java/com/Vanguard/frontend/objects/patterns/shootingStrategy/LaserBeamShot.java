@@ -1,6 +1,7 @@
 package com.Vanguard.frontend.objects.patterns.shootingStrategy;
 
 import com.Vanguard.frontend.objects.bullets.Bullet;
+import com.Vanguard.frontend.objects.bullets.BulletType;
 import com.Vanguard.frontend.objects.patterns.ShootingPattern;
 import com.Vanguard.frontend.objects.patterns.bulletStrategy.BulletMovementPattern;
 import com.Vanguard.frontend.systems.BulletManager;
@@ -39,7 +40,7 @@ public class LaserBeamShot implements ShootingPattern {
             float spawnY = originY + (isPlayer ? -i * 6f : i * 6f);
 
             if (isPlayer) {
-                bullet = bulletManager.spawnPlayerBullet(originX, spawnY, vx, vy, damage, spriteKey);
+                bullet = bulletManager.spawnPlayerBullet(originX, spawnY, vx, vy, damage, BulletType.LASER);
             } else {
                 bullet = (spriteKey != null) ? bulletManager.spawnEnemyBullet(originX, spawnY, vx, vy, damage, spriteKey)
                                              : bulletManager.spawnEnemyBullet(originX, spawnY, vx, vy, damage);
