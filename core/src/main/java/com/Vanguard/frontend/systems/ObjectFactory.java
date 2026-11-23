@@ -12,14 +12,14 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class ObjectFactory {
-    public static Player spawnPlayer(float x, float y, int hp, int power, int items, float speed, SpriteBatch batch){
-        Player player = new Player(x, y, hp, power, items, speed, batch);
+    public static Player spawnPlayer(int hp, int power, float speed, SpriteBatch batch, Texture texture,
+                                     Texture bulletTexture, Texture specialTexture, Texture specialExplosionTexture){
+        Player player = new Player(hp, power, speed, batch, texture, bulletTexture, specialTexture, specialExplosionTexture);
         return player;
-
     }
 
     //Speed only
-    public static Bullet spawnEnemyBullet(float x, float y, int power, float speed, BulletType bulletType){
+    public static Bullet spawnEnemyBullet(float x, float y, int power, float speed, SpriteBatch batch, Texture texture, BulletType bulletType){
         String key = switch (bulletType) {
             case VULCAN -> "bullet_spray.png";
 
@@ -32,18 +32,18 @@ public class ObjectFactory {
             case TOPHER -> null;
         };
         Texture sprite = AssetManager.getInstance().loadTexture(key);
-        Bullet bullet = new Bullet(x, y, power, speed, bulletType.BRATHA);
+        Bullet bullet = new Bullet(x, y, power, speed, batch, texture, bulletType.BRATHA);
         bullet.setSprite(sprite);
         return bullet;
     }
 
-    public static Bullet spawnPlayerBullet(float x, float y, int power, float speed, BulletType bulletType){
-        Bullet bullet = new Bullet(x, y, power, speed, bulletType.VULCAN);
+    public static Bullet spawnPlayerBullet(float x, float y, int power, float speed, SpriteBatch batch, Texture texture, BulletType bulletType){
+        Bullet bullet = new Bullet(x, y, power, speed, batch, texture, bulletType.VULCAN);
         return bullet;
     }
 
-    public static Item spawnItem(float x, float y, float speed, SpriteBatch batch, ItemType itemType){
-        Item item = new Item(x, y, speed, batch, itemType.SHOTPATT);
+    public static Item spawnItem(float x, float y, float speed, SpriteBatch batch, Texture texture, ItemType itemType){
+        Item item = new Item(x, y, speed, batch, texture, itemType.SHOTPATT);
         return item;
     }
 }

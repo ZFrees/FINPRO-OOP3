@@ -21,8 +21,8 @@ public class Bullet extends GameObject {
     private float angle = 90f;
     private BulletMovementPattern movementPattern = DEFAULT_MOVEMENT;
 
-    public Bullet(float x, float y, int damage, float speed, SpriteBatch batch, BulletType bulletType){
-        super(x, y, 8, 8, speed, Color.WHITE);
+    public Bullet(float x, float y, int damage, float speed, SpriteBatch batch, Texture texture, BulletType bulletType){
+        super(x, y, 8, 8, speed, batch, texture);
         this.vx = 0;
         this.vy = speed;
         this.damage = damage;
@@ -32,11 +32,11 @@ public class Bullet extends GameObject {
         this.bulletType = bulletType;
     }
 
-    public Bullet(SpriteBatch batch) {
-        super(0, 0, 8, 8, 0, Color.WHITE);
-        this.batch = batch;
-        this.active = false;
-    }
+//    public Bullet(SpriteBatch batch) {
+//        super(0, 0, 8, 8, 0,  batch, texture);
+//        this.batch = batch;
+//        this.active = false;
+//    }
 
     public void init(float x, float y, float vx, float vy, int damage, boolean playerBullet, Texture texture, BulletType bulletType) {
         this.x = x;

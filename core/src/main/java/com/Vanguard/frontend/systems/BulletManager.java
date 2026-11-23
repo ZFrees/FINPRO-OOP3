@@ -31,30 +31,30 @@ public class BulletManager {
         textures.put(key, texture);
     }
 
-    public Bullet spawnPlayerBullet(float x, float y, float vx, float vy, int damage) {
-        return spawnPlayerBullet(x, y, vx, vy, damage, null);
+    public Bullet spawnPlayerBullet(float x, float y, float vx, float vy, int damage, BulletType type) {
+        return spawnPlayerBullet(x, y, vx, vy, damage, type, null);
     }
 
-    public Bullet spawnPlayerBullet(float x, float y, float vx, float vy, int damage, String spriteKey) {
+    public Bullet spawnPlayerBullet(float x, float y, float vx, float vy, int damage, BulletType type, String spriteKey) {
         Texture tex = textures.getOrDefault(spriteKey, defaultPlayerTexture);
-        return spawn(playerPool, playerActive, x, y, vx, vy, damage, true, tex);
+        return spawn(playerPool, playerActive, x, y, vx, vy, damage, true, tex, type);
     }
 
-    public Bullet spawnEnemyBullet(float x, float y, float vx, float vy, int damage) {
-        return spawnEnemyBullet(x, y, vx, vy, damage, null);
+    public Bullet spawnEnemyBullet(float x, float y, float vx, float vy, int damage, BulletType type) {
+        return spawnEnemyBullet(x, y, vx, vy, damage, type, null);
     }
 
-    public Bullet spawnEnemyBullet(float x, float y, float vx, float vy, int damage, String spriteKey) {
-        Texture tex = textures.getOrDefault(spriteKey, defaultEnemyTexture);
-        return spawn(enemyPool, enemyActive, x, y, vx, vy, damage, false, tex);
+    public Bullet spawnEnemyBullet(float x, float y, float vx, float vy, int damage, BulletType type, String spriteKey) {
+        Texture tex = textures.getOrDefault(spriteKey , defaultEnemyTexture);
+        return spawn(enemyPool, enemyActive, x, y, vx, vy, damage, false, tex, type);
     }
 
     private Bullet spawn(Queue<Bullet> pool, List<Bullet> active,
                          float x, float y, float vx, float vy,
-                         int damage, boolean isPlayer, Texture tex) {
+                         int damage, boolean isPlayer, Texture tex, BulletType type) {
         Bullet bullet = pool.poll();
-        if (bullet == null) bullet = new Bullet(batch);
-        bullet.init(x, y, vx, vy, damage, isPlayer, tex);
+        if (bullet == null) bullet = new Bullet(x, y, damage, 100, batch, tex, type);
+        bullet.init(x, y, vx, vy, damage, isPlayer, tex, type);
         active.add(bullet);
         return bullet;
     }

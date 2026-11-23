@@ -12,7 +12,7 @@ public class Special {
     private static final float EXPLOSION_START_SCALE = 0.3f; // 135 px * 0.3 = ~40 px
     private static final float EXPLOSION_END_SCALE = 1.5f;   // 135 px * 1.5 = ~200 px
 
-    private int power;
+    private int damage;
     private float speed;
     private float x;
     private float y;
@@ -26,9 +26,9 @@ public class Special {
     private float explosionX;   // center of the explosion
     private float explosionY;
 
-    public Special(int power, float speed, float x, float y, SpriteBatch batch,
+    public Special(int damage, float speed, float x, float y, SpriteBatch batch,
                    Texture texture, Texture explosionTexture){
-        this.power = power;
+        this.damage = damage;
         this.speed = speed;
         this.x = x - (texture.getWidth() / 2f) - 15;
         this.y = y;
@@ -90,4 +90,5 @@ public class Special {
     public float getY() {
         return y;
     }
+    public int getDamage() { return damage; }
 }

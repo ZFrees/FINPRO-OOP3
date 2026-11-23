@@ -3,6 +3,7 @@ package com.Vanguard.frontend.objects;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
@@ -14,21 +15,22 @@ public class GameObject implements Collidable{
     protected float width;
     protected float height;
     protected float speed;
-    protected Color color;
     protected Animation<TextureRegion> animation;
     protected float stateTime = 0f;
     protected boolean active = true;
+    protected SpriteBatch batch;
+    protected Texture texture;
 
     protected Polygon shotHitbox;
     private Texture sprite;
 
-    public GameObject(float x, float y, float width, float height, float speed, Color color){
+    public GameObject(float x, float y, float width, float height, float speed, SpriteBatch batch, Texture texture){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.speed = speed;
-        this.color = color;
+        this.speed = speed;;
+        this.batch = batch;
 
         //default shot hitbox in the form of triangle, following width nheight
         float centerX = this.x + width / 2f;
@@ -53,11 +55,12 @@ public class GameObject implements Collidable{
         return this.x < -75f || this.x > screenWidth + 75f || this.y < -75f || this.y > screenHeight + 75f;
     }
 
-    public void render(ShapeRenderer shapeRenderer) {
-        if(shapeRenderer != null && color != null && active) {
-            shapeRenderer.setColor(this.color);
-            shapeRenderer.rect(this.x, this.y, this.width, this.height);
-        }
+    public void render() {
+//        if(shapeRenderer != null && color != null && active) {
+//            shapeRenderer.setColor(this.color);
+//            shapeRenderer.rect(this.x, this.y, this.width, this.height);
+//        }
+        batch.draw(texture, this.x, this.y);
     }
 
     public boolean isDestroyed() {
@@ -102,10 +105,6 @@ public class GameObject implements Collidable{
         return speed;
     }
 
-    public Color getColor() {
-        return color;
-    }
-
     public Animation<TextureRegion> getAnimation() {
         return animation;
     }
@@ -137,10 +136,6 @@ public class GameObject implements Collidable{
     public void setY(float y){ this.y = y; }
 
     public void setSprite(Texture sprite) {this.sprite = sprite;}
-
-    public void setColor(Color color){
-        this.color = color;
-    }
 
     public void setAnimation(Animation<TextureRegion> animation) {
         if(this.animation != animation){

@@ -6,6 +6,8 @@ import com.Vanguard.frontend.objects.items.ItemType;
 import com.Vanguard.frontend.objects.patterns.ShootingPattern;
 import com.Vanguard.frontend.objects.patterns.entityStrategy.EntityMovementPattern;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -13,6 +15,7 @@ public class Enemy extends EntityShooter {
     protected String name;
     protected int hp;
     protected int maxHp;
+    protected int power;
     protected long scoreValue = 100;
     protected int collisionCooldown = 1;
     protected long lastcollision = 0;
@@ -24,17 +27,17 @@ public class Enemy extends EntityShooter {
     protected float shotHitboxHeight = 0f;
 
 
-    public Enemy(String name, int maxHp) {
-        super(200, 380, 24, 24, 0, Color.PINK);
-        this.name = name;
-        this.hp = maxHp;
-        this.maxHp = maxHp;
-        this.scoreValue = scoreValue;
-        this.collisionCooldown = collisionCooldown;
-    }
+//    public Enemy(String name, int maxHp) {
+//        super(200, 380, 24, 24, 0, );
+//        this.name = name;
+//        this.hp = maxHp;
+//        this.maxHp = maxHp;
+//        this.scoreValue = scoreValue;
+//        this.collisionCooldown = collisionCooldown;
+//    }
 
-    public Enemy(float x, float y, float width, float height, Color color, String name, int hp, long scoreValue, ShootingPattern shootingPattern, EntityMovementPattern movementPattern) {
-        super(x, y, width, height, 0, color, shootingPattern, movementPattern);
+    public Enemy(float x, float y, float width, float height, SpriteBatch batch, Texture texture, String name, int hp, long scoreValue, ShootingPattern shootingPattern, EntityMovementPattern movementPattern) {
+        super(x, y, width, height, 0, batch, texture, shootingPattern, movementPattern);
         this.name = name;
         this.hp = hp;
         this.maxHp = hp;
@@ -75,8 +78,10 @@ public class Enemy extends EntityShooter {
         return this.collisionCooldown;
     }
 
-    public Enemy(float x, float y, float width, float height, Color color, String name, int hp, long scoreValue) {
-        super(x, y, width, height, 0, color);
+    public int getDamage() { return this.power; }
+
+    public Enemy(float x, float y, float width, float height, SpriteBatch batch, Texture texture, String name, int hp, long scoreValue) {
+        super(x, y, width, height, 0, batch, texture);
         this.name = name;
         this.hp = hp;
         this.maxHp = hp;
