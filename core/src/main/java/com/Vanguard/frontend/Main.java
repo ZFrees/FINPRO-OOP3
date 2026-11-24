@@ -48,8 +48,8 @@ public class Main extends ApplicationAdapter {
         bulletManager.registerTexture("straight", straightTexture);
 
         player = new Player(10, 1, 200f, batch, playerTexture, sprayTexture, specialTexture, specialExplosionTexture);
-        items.add(new Item(240f, 400f, 256f, 256f, 250f, batch, ItemType.MISSILE));
-        items.add(new Item(320f, 400f, 16f, 16f, 150f, batch, ItemType.SHOTPATT));
+        items.add(new Item(240f, 400f, 16f, 16f, 250f, batch, null, ItemType.MISSILE));
+        items.add(new Item(320f, 400f, 16f, 16f, 150f, batch, null, ItemType.SHOTPATT));
     }
 
     @Override
@@ -64,7 +64,7 @@ public class Main extends ApplicationAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.C)) player.switchWeapon();
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             items.add(new Item(Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() - 40f,
-                16f, 16f, 40f, batch, ItemType.SHOTPATT));
+                16f, 16f, 40f, batch, null, ItemType.SHOTPATT));
         }
 
         Rectangle playerBounds = new Rectangle(

@@ -26,8 +26,8 @@ public class Item extends GameObject {
         this.itemType = itemType;
     }
 
-    public Item(float x, float y, float width, float height, float speed, SpriteBatch batch, ItemType itemType){
-        super(x, y, width, height, speed, Color.CYAN);
+    public Item(float x, float y, float width, float height, float speed, SpriteBatch batch, Texture texture, ItemType itemType){
+        super(x, y, width, height, speed, batch, texture);
         this.vx = vx;
         this.vy = -speed;
         this.batch = batch;
