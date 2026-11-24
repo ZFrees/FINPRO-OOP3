@@ -1,12 +1,13 @@
 package com.Vanguard.frontend.systems;
 
+import com.Vanguard.frontend.objects.GameObject;
 import com.Vanguard.frontend.objects.bullets.Bullet;
 import com.badlogic.gdx.graphics.Texture;
+import com.Vanguard.frontend.objects.bullets.BulletType;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.*;
 
-/** Owns, updates, renders and pools all bullets. */
 public class BulletManager {
     private final SpriteBatch batch;
     private final Texture defaultPlayerTexture;
@@ -18,6 +19,8 @@ public class BulletManager {
     private final List<Bullet> playerActive = new ArrayList<>();
     private final List<Bullet> enemyActive = new ArrayList<>();
 
+    private List <GameObject> objectActive;
+
     public BulletManager(SpriteBatch batch, Texture defaultPlayerTexture, Texture defaultEnemyTexture) {
         this.batch = batch;
         this.defaultPlayerTexture = defaultPlayerTexture;
@@ -28,30 +31,30 @@ public class BulletManager {
         textures.put(key, texture);
     }
 
-    public Bullet spawnPlayerBullet(float x, float y, float vx, float vy, int damage) {
-        return spawnPlayerBullet(x, y, vx, vy, damage, null);
+    public Bullet spawnPlayerBullet(float x, float y, float vx, float vy, int damage, BulletType type) {
+        return spawnPlayerBullet(x, y, vx, vy, damage, type, null);
     }
 
-    public Bullet spawnPlayerBullet(float x, float y, float vx, float vy, int damage, String spriteKey) {
+    public Bullet spawnPlayerBullet(float x, float y, float vx, float vy, int damage, BulletType type, String spriteKey) {
         Texture tex = textures.getOrDefault(spriteKey, defaultPlayerTexture);
-        return spawn(playerPool, playerActive, x, y, vx, vy, damage, true, tex);
+        return spawn(playerPool, playerActive, x, y, vx, vy, damage, true, tex, type);
     }
 
-    public Bullet spawnEnemyBullet(float x, float y, float vx, float vy, int damage) {
-        return spawnEnemyBullet(x, y, vx, vy, damage, null);
+    public Bullet spawnEnemyBullet(float x, float y, float vx, float vy, int damage, BulletType type) {
+        return spawnEnemyBullet(x, y, vx, vy, damage, type, null);
     }
 
-    public Bullet spawnEnemyBullet(float x, float y, float vx, float vy, int damage, String spriteKey) {
-        Texture tex = textures.getOrDefault(spriteKey, defaultEnemyTexture);
-        return spawn(enemyPool, enemyActive, x, y, vx, vy, damage, false, tex);
+    public Bullet spawnEnemyBullet(float x, float y, float vx, float vy, int damage, BulletType type, String spriteKey) {
+        Texture tex = textures.getOrDefault(spriteKey , defaultEnemyTexture);
+        return spawn(enemyPool, enemyActive, x, y, vx, vy, damage, false, tex, type);
     }
 
     private Bullet spawn(Queue<Bullet> pool, List<Bullet> active,
                          float x, float y, float vx, float vy,
-                         int damage, boolean isPlayer, Texture tex) {
+                         int damage, boolean isPlayer, Texture tex, BulletType type) {
         Bullet bullet = pool.poll();
-        if (bullet == null) bullet = new Bullet(batch);
-        bullet.init(x, y, vx, vy, damage, isPlayer, tex);
+        if (bullet == null) bullet = new Bullet(x, y, damage, 100, batch, tex, type);
+        bullet.init(x, y, vx, vy, damage, isPlayer, tex, type);
         active.add(bullet);
         return bullet;
     }
@@ -78,6 +81,7 @@ public class BulletManager {
         for (Bullet b : playerActive) b.render();
         for (Bullet b : enemyActive) b.render();
     }
+
 
     public List<Bullet> getPlayerActive() { return playerActive; }
     public List<Bullet> getEnemyActive() { return enemyActive; }

@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Polygon;
 
-public class Player extends GameObject{
+public class Player extends EntityShooter{
     private int hp;
     private int power;
     private float speed;
@@ -59,7 +59,7 @@ public class Player extends GameObject{
 
     public Player(int hp, int power, float speed, SpriteBatch batch, Texture texture,
                   Texture bulletTexture, Texture specialTexture, Texture specialExplosionTexture){
-        super(280, 50, 32, 32, speed, Color.RED);
+        super(280, 50, 32, 32, speed, batch, texture);
         this.hp = hp;
         this.power = clampLevel(power);
         this.speed = speed;
@@ -70,13 +70,13 @@ public class Player extends GameObject{
         this.specialExplosionTexture = specialExplosionTexture;
     }
 
-    public Player(float x, float y, int hp, int power, int items, float speed, SpriteBatch batch){
-        super(x, y, 32, 32, speed, Color.RED);
-        this.hp = hp;
-        this.power = clampLevel(power);
-        this.items = items;
-        this.batch = batch;
-    }
+//    public Player(float x, float y, int hp, int power, int items, float speed, SpriteBatch batch){
+//        super(x, y, 32, 32, speed, Color.RED);
+//        this.hp = hp;
+//        this.power = clampLevel(power);
+//        this.items = items;
+//        this.batch = batch;
+//    }
 
     public Polygon getCoreHitBox() {
         float w = texture.getWidth();
@@ -153,6 +153,10 @@ public class Player extends GameObject{
         weapon = (weapon == WEAPON_SPRAY) ? WEAPON_STRAIGHT : WEAPON_SPRAY; }
     public int getWeapon() {
         return weapon;
+    }
+
+    public void takeDamage(int damage) {
+        this.hp -= damage;
     }
 
     public int getHp() { return hp; }

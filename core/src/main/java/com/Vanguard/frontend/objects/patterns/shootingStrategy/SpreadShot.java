@@ -2,6 +2,7 @@ package com.Vanguard.frontend.objects.patterns.shootingStrategy;
 
 import com.Vanguard.frontend.objects.GameObject;
 import com.Vanguard.frontend.objects.bullets.Bullet;
+import com.Vanguard.frontend.objects.bullets.BulletType;
 import com.Vanguard.frontend.objects.patterns.ShootingPattern;
 import com.Vanguard.frontend.objects.patterns.bulletStrategy.BulletMovementPattern;
 import com.Vanguard.frontend.systems.BulletManager;
@@ -91,11 +92,11 @@ public class SpreadShot implements ShootingPattern {
 
                 Bullet bullet;
                 if (isPlayer) {
-                    bullet = bulletManager.spawnPlayerBullet(spawnX, originY, vx, vy, bulletDamage, spriteKey);
+                    bullet = bulletManager.spawnPlayerBullet(spawnX, originY, vx, vy, bulletDamage, null, spriteKey);
                 } else {
                     bullet = (spriteKey != null)
-                        ? bulletManager.spawnEnemyBullet(spawnX, originY, vx, vy, bulletDamage, spriteKey)
-                        : bulletManager.spawnEnemyBullet(spawnX, originY, vx, vy, bulletDamage);
+                        ? bulletManager.spawnEnemyBullet(spawnX, originY, vx, vy, bulletDamage, null, spriteKey)
+                        : bulletManager.spawnEnemyBullet(spawnX, originY, vx, vy, bulletDamage, null);
                 }
 
                 if (bullet != null) {

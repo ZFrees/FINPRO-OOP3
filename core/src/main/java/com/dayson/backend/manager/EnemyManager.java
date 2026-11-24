@@ -1,7 +1,7 @@
 
-package com.Vanguard.backend.managers;
+package com.dayson.backend.manager;
 
-import com.Vanguard.backend.entities.Enemy;
+import com.Vanguard.frontend.objects.enemies.Enemy;
 import com.badlogic.gdx.Gdx;
 
 import java.util.ArrayList;
