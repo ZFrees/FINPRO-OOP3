@@ -88,7 +88,7 @@ public class CollisionManager {
         for (Enemy enemy : enemies) {
 
             //polygon, overlap is exclusively for rectangle
-            if (Intersector.overlapConvexPolygons(player.getCoreHitBox(), enemy.getShotHitbox())) {
+            if (Intersector.overlapConvexPolygons(player.getCoreHitbox(), enemy.getShotHitbox())) {
 
                 player.takeDamage(enemy.getDamage());
 

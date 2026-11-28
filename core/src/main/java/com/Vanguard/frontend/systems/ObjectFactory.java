@@ -3,6 +3,7 @@ package com.Vanguard.frontend.systems;
 import com.Vanguard.frontend.objects.Player;
 import com.Vanguard.frontend.objects.bullets.Bullet;
 import com.Vanguard.frontend.objects.bullets.BulletType;
+import com.Vanguard.frontend.objects.enemies.Fighter;
 import com.Vanguard.frontend.objects.items.Item;
 import com.Vanguard.frontend.objects.items.ItemType;
 import com.Vanguard.frontend.objects.Collidable;
@@ -10,11 +11,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class ObjectFactory {
+    private static Player currentPlayer;
     public static Player spawnPlayer(int hp, int power, float speed, SpriteBatch batch, Texture texture,
-                                     Texture bulletTexture, Texture specialTexture, Texture specialExplosionTexture){
+                                     Texture bulletTexture, Texture specialTexture, Texture specialExplosionTexture) {
         Player player = new Player(hp, power, speed, batch, texture, bulletTexture, specialTexture, specialExplosionTexture);
+        currentPlayer = player;
         return player;
     }
 
@@ -35,6 +39,11 @@ public class ObjectFactory {
         Bullet bullet = new Bullet(x, y, power, speed, batch, texture, bulletType.BRATHA);
         bullet.setSprite(sprite);
         return bullet;
+    }
+
+    public static Fighter createFighter(float x, float y, String name, int hp, SpriteBatch batch, Texture texture) {
+        Fighter fighter = new Fighter(x, y, name, hp, batch, texture, currentPlayer);
+        return fighter;
     }
 
     public static Bullet spawnPlayerBullet(float x, float y, int power, float speed, SpriteBatch batch, Texture texture, BulletType bulletType){

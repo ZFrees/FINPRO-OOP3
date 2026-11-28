@@ -20,9 +20,15 @@ public class Enemy extends EntityShooter {
     protected int collisionCooldown = 1;
     protected long lastcollision = 0;
 
+    //item drop behaviour
     protected ItemType itemDrop = null;
+    protected float itemChance = 0f;
+
+    //other params
     protected boolean damageable = true;
     protected boolean collidable = true;
+
+    //hitbox
     protected float shotHitboxWidth = 0f;
     protected float shotHitboxHeight = 0f;
 
@@ -36,8 +42,18 @@ public class Enemy extends EntityShooter {
 //        this.collisionCooldown = collisionCooldown;
 //    }
 
+    //custom patterns
     public Enemy(float x, float y, float width, float height, SpriteBatch batch, Texture texture, String name, int hp, long scoreValue, ShootingPattern shootingPattern, EntityMovementPattern movementPattern) {
         super(x, y, width, height, 0, batch, texture, shootingPattern, movementPattern);
+        this.name = name;
+        this.hp = hp;
+        this.maxHp = hp;
+        this.scoreValue = scoreValue;
+    }
+
+    //preset patterns within respective enemy types
+    public Enemy(float x, float y, float width, float height, SpriteBatch batch, Texture texture, String name, int hp, long scoreValue) {
+        super(x, y, width, height, 0, batch, texture);
         this.name = name;
         this.hp = hp;
         this.maxHp = hp;
@@ -80,15 +96,6 @@ public class Enemy extends EntityShooter {
 
     public int getDamage() { return this.power; }
 
-    public Enemy(float x, float y, float width, float height, SpriteBatch batch, Texture texture, String name, int hp, long scoreValue) {
-        super(x, y, width, height, 0, batch, texture);
-        this.name = name;
-        this.hp = hp;
-        this.maxHp = hp;
-        this.scoreValue = scoreValue;
-        this.collisionCooldown = collisionCooldown;
-    }
-
     public boolean takeDamage(int damage) {
         if (!damageable) {
             return false;
@@ -129,28 +136,6 @@ public class Enemy extends EntityShooter {
 
     public boolean isCollidable() { return collidable; }
     public void setCollidable(boolean collidable) { this.collidable = collidable; }
-
-    public Polygon getShotHitbox() {
-//        if (shotHitboxWidth <= 0f || shotHitboxHeight <= 0f || shotHitbox == null) {
-//            return getCoreHitbox();
-//        }
-        if (this.shotHitbox != null || shotHitboxWidth > 0f || shotHitboxHeight > 0f) {
-            return this.shotHitbox;
-        } else { //defaults to rectangle
-            float halfW = width / 2f;
-            float halfH = height / 2f;
-
-            float[] vertices = new float[] {
-                -halfW, -halfH,   // Bottom-left
-                halfW, -halfH,   // Bottom-right
-                halfW,  halfH,   // Top-right
-                -halfW,  halfH    // Top-left
-            };
-
-            Polygon hitbox = new Polygon(vertices);
-            return hitbox;
-        }
-    }
 
     public void setShotHitboxSize(float width, float height) {
         this.shotHitboxWidth = width;

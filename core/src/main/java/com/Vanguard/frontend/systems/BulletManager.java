@@ -55,6 +55,8 @@ public class BulletManager {
         Bullet bullet = pool.poll();
         if (bullet == null) bullet = new Bullet(x, y, damage, 100, batch, tex, type);
         bullet.init(x, y, vx, vy, damage, isPlayer, tex, type);
+        bullet.setX(x - bullet.getWidth() / 2f);
+        bullet.setY(y - bullet.getHeight() / 2f);
         active.add(bullet);
         return bullet;
     }

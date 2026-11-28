@@ -21,30 +21,33 @@ public class GameObject implements Collidable{
     protected SpriteBatch batch;
     protected Texture texture;
 
-    protected Polygon shotHitbox;
-    private Texture sprite;
+    protected Polygon coreHitbox;
+    protected Polygon shotHitbox;   // what bullets check against
+
+    protected float rotation = 0f;
 
     public GameObject(float x, float y, float width, float height, float speed, SpriteBatch batch, Texture texture){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.speed = speed;;
+        this.speed = speed;
         this.batch = batch;
+        this.texture = texture;
 
-        //default shot hitbox in the form of triangle, following width nheight
-        float centerX = this.x + width / 2f;
-        float centerY = this.y + height / 2f;
+        initHitboxes();
+    }
 
-        float[] vertices = {
-            centerX, centerY + height / 4,
-            centerX - width / 4, centerY - height / 4,
-            centerX + width / 4, centerY - height / 4
-        };
+    protected void initHitboxes() {
+        float cw = width / 2f, ch = height / 2f;
+        this.coreHitbox = new Polygon(new float[] { 0f, 0f, cw, 0f, cw, ch, 0f, ch });
 
-        this.shotHitbox = new Polygon(vertices);
+        this.shotHitbox = new Polygon(new float[] {
+            width / 2f,      height * 3f / 4f,
+            width / 4f,      height / 4f,
+            width * 3f / 4f, height / 4f
+        });
         this.shotHitbox.setOrigin(width / 2f, height / 2f);
-        this.shotHitbox.setPosition(x, y);
     }
 
     public void update(float delta){
@@ -56,24 +59,32 @@ public class GameObject implements Collidable{
     }
 
     public void render() {
-//        if(shapeRenderer != null && color != null && active) {
-//            shapeRenderer.setColor(this.color);
-//            shapeRenderer.rect(this.x, this.y, this.width, this.height);
-//        }
-        batch.draw(texture, this.x, this.y);
+        if (!active || batch == null) return;
+
+        if (animation != null) {
+            TextureRegion frame = animation.getKeyFrame(stateTime);
+            batch.draw(frame, x, y, width / 2f, height / 2f, width, height, 1f, 1f, rotation);
+        } else if (texture != null) {
+            batch.draw(texture, x, y, width / 2f, height / 2f, width, height,
+                1f, 1f, rotation,
+                0, 0, texture.getWidth(), texture.getHeight(), false, false);
+        }
     }
 
     public boolean isDestroyed() {
-        if(!this.active){
-            return true;
-        }
-        return false;
+        return !active;
     }
 
     //overrides
     @Override
     public Polygon getCoreHitbox() {
-        return this.shotHitbox;
+        coreHitbox.setPosition(x + width / 4f, y + height / 4f);
+        return coreHitbox;
+    }
+
+    public Polygon getShotHitbox() {
+        shotHitbox.setPosition(x, y);
+        return shotHitbox;
     }
 
     @Override
@@ -113,6 +124,8 @@ public class GameObject implements Collidable{
         return stateTime;
     }
 
+    public float getRotation() { return rotation; }
+
     public boolean isActive(){
         return active;
     }
@@ -135,7 +148,9 @@ public class GameObject implements Collidable{
 
     public void setY(float y){ this.y = y; }
 
-    public void setSprite(Texture sprite) {this.sprite = sprite;}
+    public void setRotation(float rotation) { this.rotation = rotation; }
+
+    public void setSprite(Texture sprite) {this.texture = sprite;}
 
     public void setAnimation(Animation<TextureRegion> animation) {
         if(this.animation != animation){

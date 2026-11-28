@@ -1,9 +1,14 @@
 package com.Vanguard.frontend;
 
 import com.Vanguard.frontend.objects.Player;
+import com.Vanguard.frontend.objects.bullets.Bullet;
+import com.Vanguard.frontend.objects.enemies.Fighter;
 import com.Vanguard.frontend.objects.items.Item;
 import com.Vanguard.frontend.objects.items.ItemType;
 import com.Vanguard.frontend.systems.BulletManager;
+import com.Vanguard.frontend.systems.AssetManager;
+import com.Vanguard.frontend.systems.ObjectFactory;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -22,6 +27,9 @@ public class Main extends ApplicationAdapter {
     private BulletManager bulletManager;
     private List<Special> specials;
 
+    //enemies
+    private List<Fighter> fighters;
+
     private Texture playerTexture;
     private Texture missilesTexture;
     private Texture shotTexture;
@@ -36,20 +44,34 @@ public class Main extends ApplicationAdapter {
         specials = new ArrayList<>();
         items = new ArrayList<>();
 
-        playerTexture = new Texture("player.png");
-        missilesTexture = new Texture("item.png");
-        shotTexture = new Texture("vulcan.png");
-        sprayTexture = new Texture("bullet_spray.png");
-        specialTexture = new Texture("dih.png");
-        straightTexture = new Texture("bullet_straight.png");
-        specialExplosionTexture = new Texture("dih_explosion.png");
+        AssetManager.getInstance().init();
+
+        playerTexture = AssetManager.getInstance().getTexture("player.png");
+        missilesTexture = AssetManager.getInstance().getTexture("item.png");
+        shotTexture = AssetManager.getInstance().getTexture("vulcan.png");
+        sprayTexture = AssetManager.getInstance().getTexture("bullet_spray.png");
+        specialTexture = AssetManager.getInstance().getTexture("dih.png");
+        straightTexture = AssetManager.getInstance().getTexture("bullet_straight.png");
+        specialExplosionTexture = AssetManager.getInstance().getTexture("dih_explosion.png");
 
         bulletManager = new BulletManager(batch, sprayTexture, sprayTexture);
         bulletManager.registerTexture("straight", straightTexture);
 
-        player = new Player(10, 1, 200f, batch, playerTexture, sprayTexture, specialTexture, specialExplosionTexture);
+        //For later use in level manager, this is how to add items, players, and enemies into the simualtion
+        player = ObjectFactory.spawnPlayer(20, 1, 200f, batch, playerTexture, sprayTexture, specialTexture, specialExplosionTexture);
         items.add(new Item(240f, 400f, 16f, 16f, 250f, batch, null, ItemType.MISSILE));
         items.add(new Item(320f, 400f, 16f, 16f, 150f, batch, null, ItemType.SHOTPATT));
+
+        //Enemies for the moment, later moved to level manager
+        fighters = new ArrayList<>();
+        Texture fighterTexture = AssetManager.getInstance().getTexture("Fighter.png");
+
+        float fighterWidth = 36f;    // matches the width in Fighter's constructor
+        float fighterHeight = 36f;
+        float spawnX = (Gdx.graphics.getWidth() - fighterWidth) / 4f;
+        float spawnY = Gdx.graphics.getHeight() - fighterHeight;
+
+        fighters.add(ObjectFactory.createFighter(spawnX, spawnY, "Fighter", 50, batch, fighterTexture));
     }
 
     @Override
@@ -96,6 +118,41 @@ public class Main extends ApplicationAdapter {
             }
         }
 
+        // player bullets vs fighters
+        for (Bullet b : bulletManager.getPlayerActive()) {
+            if (!b.isActive()) continue;
+            for (Fighter f : fighters) {
+                if (f.isDestroyed()) continue;
+                if (Intersector.overlapConvexPolygons(b.getCoreHitbox(), f.getShotHitbox())) {
+                    boolean killed = f.takeDamage(b.getDamage());
+                    if (killed) player.addScore((int) f.getScoreValue());
+                    b.destroy();
+                    break;
+                }
+            }
+        }
+
+        // enemy bullets vs player
+        for (Bullet b : bulletManager.getEnemyActive()) {
+            if (!b.isActive()) continue;
+            if (player.isAlive() && Intersector.overlapConvexPolygons(b.getCoreHitbox(), player.getCoreHitbox())) {
+                player.takeDamage(b.getDamage());
+                b.destroy();
+            }
+        }
+
+        //Iterator for fighters
+        for (Fighter f : fighters) {
+            f.update(delta);
+            if (f.canShoot(delta)) f.shootBullet(bulletManager);
+        }
+        fighters.removeIf(f -> f.isDestroyed() || f.isOffScreen(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+
+        if (player.isAlive()) {
+            player.update(delta);
+            player.shootBullet(bulletManager);
+        }
+
         batch.begin();
         player.render();
 
@@ -107,7 +164,6 @@ public class Main extends ApplicationAdapter {
                 currentItem.getWidth(), currentItem.getHeight());
         }
 
-        player.shootBullet(bulletManager);
         bulletManager.update(delta, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         Special newSpecial = player.shootSpecial();
@@ -120,6 +176,9 @@ public class Main extends ApplicationAdapter {
         for (Special special : specials) {
             special.render();
         }
+
+        //For fighters asw
+        for (Fighter f : fighters) f.render();
         batch.end();
 
         specials.removeIf(Special::isFinished);

@@ -6,6 +6,7 @@ import com.Vanguard.frontend.objects.patterns.itemStrategy.FloatingBobbingMoveme
 import com.Vanguard.frontend.objects.patterns.itemStrategy.ItemMovementPattern;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Item extends GameObject {
@@ -30,10 +31,10 @@ public class Item extends GameObject {
         super(x, y, width, height, speed, batch, texture);
         this.vx = vx;
         this.vy = -speed;
-        this.batch = batch;
         this.itemType = itemType;
         this.movementPattern = createMovementPattern(itemType, speed);
     }
+
 
     private ItemMovementPattern createMovementPattern(ItemType type, float speed) {
         if (type == ItemType.SHOTPATT) {

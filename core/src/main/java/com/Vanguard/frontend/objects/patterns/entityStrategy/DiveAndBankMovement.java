@@ -31,8 +31,9 @@ public class DiveAndBankMovement implements EntityMovementPattern {
             if (timer >= diveDuration && timer < (diveDuration + bankDuration)) {
                 angle += bankAngularVelocity * delta;
             }
-            float vx = (float) Math.cos(angle) * speed;
-            float vy = (float) Math.sin(angle) * speed;
+            float rad = (float) Math.toRadians(angle);
+            float vx = (float) Math.cos(rad) * speed;
+            float vy = (float) Math.sin(rad) * speed;
             entity.setX(entity.getX() + vx * delta);
             entity.setY(entity.getY() + vy * delta);
         }
